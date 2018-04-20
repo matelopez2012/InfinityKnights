@@ -1,0 +1,92 @@
+
+/* 
+    Created on : 12/11/2017, 02:20:15 AM
+    Author     : Sebas
+*/
+
+/* 
+    Estilos para la vista principal de la galaxia
+*/
+#principalPane{
+    -fx-background-image: url("../Images/Universe.jpg");
+    -fx-background-repeat: stretch;   
+    -fx-background-size: stretch;
+    -fx-background-position: center center;
+    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+    
+}
+.hamburguer StackPane{
+    -fx-background-color: white;
+   
+}
+
+.button:hover{
+    -fx-background-color: #00c853;
+    -fx-text-fill: #ffffff;
+    -fx-text-alignment: center;    
+}
+
+#btnExitGame {
+    -fx-background-color: #3399ff;
+    -fx-border-color: black;
+    -fx-background-radius: 10, 1;
+}
+
+
+.circleTest{
+    -fx-background-image: url("../Images/iconImage.jpeg");
+}
+
+/* 
+    Estilos para la vista de enemiesInformation
+*/
+
+.paneEnemiesInfo{
+        -fx-background-image: url("../Images/iconImage.jpeg");
+        -fx-background-size: 100%;
+}
+
+.buttonEnemiesInfo{
+    -fx-background-color:
+        linear-gradient(#00226d, #000000),
+        radial-gradient(center 50% -40%, radius 200%, #80a3f2 45%, #4a6bb5 50%);
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+}
+
+.buttonEnemiesExit{
+    -fx-background-color:
+        linear-gradient(#00226d, #000000),
+        radial-gradient(center 50% -40%, radius 200%, #f93b3b 45%, #e81e1e 50%);
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+}
+
+GridPane Text{
+    -fx-font-size: 15;
+    -fx-font-family: "Britannic Bold";
+    -fx-font-weight: bold;
+    -fx-fill: #000000;
+    -fx-padding-left: 20;
+}
+
+
+
+/*
+    Estilos para la vista de carga del juego
+*/
+
+#loadPane{
+    -fx-background-image: url("../Images/wallPaperImage.PNG");
+    -fx-background-repeat: stretch;   
+    -fx-background-size: stretch;
+    -fx-background-position: center center;
+    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+    
+}
+
+#lifeBar{
+    -fx-fill: #00cc00;
+}
