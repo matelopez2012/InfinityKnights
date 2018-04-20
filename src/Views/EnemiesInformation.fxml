@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="paneEnemiesInfo" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-radius: 30;" stylesheets="@../Resources/app.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.EnemiesInformationController">
+   <children>
+      <AnchorPane opacity="0.19" prefHeight="400.0" prefWidth="600.0" styleClass="paneEnemiesInfo" stylesheets="@../Resources/app.css" />
+      <ImageView fx:id="enemieImage" fitHeight="295.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="39.0">
+         <image>
+            <Image url="@../Images/enemyImage1.png" />
+         </image>
+      </ImageView>
+      <Separator layoutX="17.0" layoutY="348.0" prefHeight="0.0" prefWidth="569.0" style="-fx-background-color: black;" />
+      <JFXTextArea layoutX="283.0" layoutY="47.0" prefHeight="279.0" prefWidth="231.0" style="-fx-border-color: black; -fx-border-radius: 10;" />
+      <GridPane layoutX="295.0" layoutY="65.0" prefHeight="252.0" prefWidth="195.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="RACE :" wrappingWidth="109.13671875" />
+            <Text fx:id="txtTypeValue" strokeType="OUTSIDE" strokeWidth="0.0" text="MEDIUM" wrappingWidth="109.13671875" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="NAME :" wrappingWidth="109.13671875" GridPane.rowIndex="2" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TYPE :" wrappingWidth="109.13671875" GridPane.rowIndex="1" />
+            <Text fx:id="txtNameValue" strokeType="OUTSIDE" strokeWidth="0.0" text="SANGUEILI" wrappingWidth="109.13671875" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="HURT :" wrappingWidth="109.13671875" GridPane.rowIndex="3" />
+            <Text fx:id="txtRaceValue" strokeType="OUTSIDE" strokeWidth="0.0" text="REAPER" wrappingWidth="109.13671875" GridPane.columnIndex="1" />
+            <Text fx:id="txtHurtValue" strokeType="OUTSIDE" strokeWidth="0.0" text="10" wrappingWidth="109.13671875" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="LIFE :" wrappingWidth="109.13671875" GridPane.rowIndex="4" />
+            <Text fx:id="txtLifeValue" strokeType="OUTSIDE" strokeWidth="0.0" text="2000" wrappingWidth="109.13671875" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+      </GridPane>
+      <GridPane layoutX="38.0" layoutY="356.0" prefHeight="31.0" prefWidth="534.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <JFXButton fx:id="btnNodrize" onAction="#changeInformation" prefHeight="31.0" prefWidth="104.0" styleClass="buttonEnemiesInfo" stylesheets="@../Resources/app.css" text="NODRIZE">
+               <font>
+                  <Font name="Britannic Bold" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btnExplorer" onAction="#changeInformation" prefHeight="31.0" prefWidth="115.0" styleClass="buttonEnemiesInfo" stylesheets="@../Resources/app.css" text="EXPLORER" GridPane.columnIndex="2">
+               <font>
+                  <Font name="Britannic Bold" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btnMedium" onAction="#changeInformation" prefHeight="31.0" prefWidth="104.0" styleClass="buttonEnemiesInfo" stylesheets="@../Resources/app.css" text="MEDIUM" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Britannic Bold" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btnExit" onAction="#exit" prefHeight="31.0" prefWidth="71.0" styleClass="buttonEnemiesExit" stylesheets="@../Resources/app.css" text="EXIT" GridPane.columnIndex="3">
+               <font>
+                  <Font name="Britannic Bold" size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </JFXButton>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

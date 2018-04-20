@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="324.0" prefWidth="131.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.SidePanelContentController">
+   <children>
+      <ImageView fitHeight="113.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/iconImage2.jpeg" />
+         </image>
+      </ImageView>
+      <JFXButton fx:id="btnEnemies" onAction="#openViews" prefHeight="47.0" prefWidth="134.0" stylesheets="@../Resources/app.css" text="Enemies" />
+      <JFXButton fx:id="btnWeapons" onAction="#openViews" prefHeight="51.0" prefWidth="146.0" stylesheets="@../Resources/app.css" text="Weapons" />
+      <JFXButton fx:id="btnImprovements" onAction="#openViews" prefHeight="50.0" prefWidth="147.0" stylesheets="@../Resources/app.css" text="Improvements" />
+      <JFXButton fx:id="btnMaps" onAction="#openViews" prefHeight="51.0" prefWidth="135.0" stylesheets="@../Resources/app.css" text="Maps" />
+      <JFXButton fx:id="btnProbes" onAction="#openViews" prefHeight="47.0" prefWidth="135.0" stylesheets="@../Resources/app.css" text="Probes" />
+   </children>
+</VBox>
