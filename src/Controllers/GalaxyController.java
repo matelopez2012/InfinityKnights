@@ -22,6 +22,7 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
@@ -36,6 +37,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Sphere;
 import javafx.util.Duration;
 import javax.swing.JOptionPane;
+import org.controlsfx.control.Notifications;
 
 /**
  * FXML Controller class
@@ -43,6 +45,8 @@ import javax.swing.JOptionPane;
  * @author Sebas
  */
 public class GalaxyController implements Initializable {
+
+    boolean activeNewNebula = false;
 
     @FXML
     private BorderPane principalPane;
@@ -160,10 +164,6 @@ public class GalaxyController implements Initializable {
      */
     @FXML
     private void moveSonda(MouseEvent event) {
-        System.out.println(event.getSceneX() + " -- " + event.getSceneY());
-        System.out.println("---" + event.getX() + " -- " + event.getY());
-//        //Point pointMouse = MouseInfo.getPointerInfo().getLocation();
-//        Bounds boundsInScene = sonda.localToScene(sonda.getBoundsInLocal());
         TranslateTransition translateTransition = new TranslateTransition();
         translateTransition.setNode(blueShip);
         translateTransition.setDuration(Duration.seconds(1));
@@ -192,11 +192,35 @@ public class GalaxyController implements Initializable {
     }
 
     @FXML
-    private void newNebula(MouseEvent event) {        
-//        JFXButton btnClick = (JFXButton) event.getSource();
+    private void newNebula() {
+        panelActionClick();
+    }
+
+    private void panelActionClick() {
         String nameNebula = JOptionPane.showInputDialog("Digite el nombre de la Nebulosa");
         Nebula nebula = new Nebula(nameNebula);
-//        ImageView imageViewNebula = new ImageView(new Image("Images/galaxyIcon2.jpg"));
+        if (!nameNebula.isEmpty()) {
+            principalPane.getCenter().setOnMouseClicked((MouseEvent eventClick) -> {
+                ImageView imageView = new ImageView("Images/nebulaIcon5.png");
+                imageView.setFitHeight(200);
+                imageView.setFitWidth(200);
+                principalPane.getChildren().add(imageView);
+                imageView.setX(eventClick.getX());
+                imageView.setY(eventClick.getY());
+                System.out.println(activeNewNebula);               
+            });
+        } else {
+            Image close = new Image("/Images/close.png");
+            Notifications dateNotification = Notifications.create()
+                    .title("Alert")
+                    .text("Type nebulosa's name")
+                    .hideAfter(Duration.seconds(2))
+                    .graphic(new ImageView(close))
+                    .position(Pos.TOP_CENTER);
+            dateNotification.darkStyle();
+            dateNotification.show();
+        }
+
     }
 
     private void exitGame() {
