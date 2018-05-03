@@ -6,8 +6,8 @@
 package models;
 
 import Models.Nebula;
-import Models.PlanetarySystem;
 import Models.Planet;
+import Models.PlanetarySystem;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
@@ -15,22 +15,20 @@ import org.json.JSONObject;
 
 /**
  *
- * @author Sebas
+ * @author matel
  */
-public class JSONReader
+public class LoaderJSON
 {
-    String filePath;
 
-    public JSONReader(String filePath)
+    public LoaderJSON()
     {
-        this.filePath = filePath;
     }
 
-    public LinkedList<Nebula> readJSON()
+    public LinkedList<Nebula> readJSON(String filePath)
     {
         JOptionPane.showMessageDialog(null, "El re");
         LinkedList<Nebula> resNebulas = new LinkedList<>();
-        CAFDataEx dataReader = CAFDataEx.dataWithContentsOfFile(this.filePath);
+        CAFDataEx dataReader = CAFDataEx.dataWithContentsOfFile(filePath);
         JSONObject nebulas = dataReader.toJSONObject().getJSONObject("NEBULAS");
         for (String nebulaName : nebulas.keySet())//Todas la nebulas -- contenido de Mateo
         {
@@ -67,5 +65,4 @@ public class JSONReader
         JOptionPane.showMessageDialog(null, resNebulas.toString());
         return resNebulas;
     }
-
 }

@@ -5,11 +5,11 @@
  */
 package Controllers;
 
+import Models.FileLoader;
 import Models.Nebula;
 import Models.Planet;
 import Models.PlanetarySystem;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,10 +38,10 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import javax.swing.JOptionPane;
-import models.JSONReader;
 import org.controlsfx.control.Notifications;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import models.LoaderJSON;
 
 /**
  * FXML Controller class
@@ -50,11 +50,11 @@ import org.json.JSONObject;
  */
 public class GalaxyController implements Initializable
 {
-
+    FileLoader loader;
     boolean createNebula;
     boolean createPlanetarySystem;
     boolean createPlanet;
-    boolean sePuedeCrear;
+    boolean enableCreation;
 
     boolean planetarySystemView;
     boolean planetsView;
@@ -72,8 +72,6 @@ public class GalaxyController implements Initializable
     private ProgressBar energyBar;
     private ProgressIndicator indicator;
     private JFXHamburger hamburguer;
-    @FXML
-    private JFXDrawer drawer;
 
     public static BorderPane rootP;
     @FXML
@@ -104,12 +102,14 @@ public class GalaxyController implements Initializable
         this.createNebula = false;
         this.createPlanetarySystem = false;
         this.createPlanet = false;
-        this.sePuedeCrear = true;
+        this.enableCreation = true;
         this.planetarySystemView = true;
         this.planetsView = false;
         this.auxNebula = null;
         this.auxPlanetarySystem = null;
         this.nebulas = new LinkedList<>();
+        this.loader = new FileLoader();
+
     }
 
     /**
@@ -276,232 +276,181 @@ public class GalaxyController implements Initializable
         System.exit(0);
     }
 
+    private void changeHeader(String name)
+    {
+        GridPane header = new GridPane();
+        header.setPadding(new Insets(0, 0, 0, 30));//t, r, b, l
+        header.getColumnConstraints().add(new ColumnConstraints(1300));
+        header.setVgap(8);
+        header.setHgap(5);
+
+        Label title = new Label(name);
+        title.setFont(Font.font("Cambria", 30));
+        title.setTextFill(Color.web("#0076a3"));
+        title.setLayoutX(20);
+        title.setLayoutY(20);
+        title.setWrapText(true);
+        title.setVisible(true);
+
+        header.setGridLinesVisible(true);//Muestra las lineas del GridPane
+        this.btnSuccesful.setVisible(true);
+
+        header.add(title, 0, 0);//hijo, columna, fila
+
+        header.add(this.btnSuccesful, 1, 0);
+//                            this.nebulaHeader = encabezado;
+        this.principalPane.setTop(header);
+    }
+
+    private Object createObject(String name, String img, MouseEvent event, String objectType)
+    {
+        Object res = null;
+        ImageView imageView = new ImageView(img);
+        imageView.setFitHeight(100);
+        imageView.setFitWidth(100);
+        imageView.setId(name);
+
+        Label label = new Label(name);
+        label.setFont(Font.font("Cambria", 30));
+        label.setTextFill(Color.WHITE);
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10, 10, 10, 10));//t, r, b, l
+        grid.setVgap(8);
+        grid.setHgap(5);
+        grid.setAlignment(Pos.CENTER);
+        grid.add(label, 0, 0);//hijo, columna, fila
+        grid.add(imageView, 0, 1);
+        grid.setGridLinesVisible(true);//Muestra las lineas del GridPane
+        grid.setLayoutX(event.getScreenX());
+        grid.setLayoutY(event.getScreenY());
+        switch (objectType)
+        {
+            case "NEBULA":
+                Nebula newNebula = new Nebula(name);
+                newNebula.setView(grid);
+                grid.setOnMouseClicked((MouseEvent evento)
+                        -> 
+                        {
+                            if (this.createNebula)//Alerta que esta intentando crear una nebula sobre otra existente
+                            {
+                                notification("/Images/close.png", "Alert", "Try again in another place");
+                                this.enableCreation = false;
+                            }
+                            else//Accede a la creacion de sistemas planterios de la nebula seleccionada
+                            {
+                                this.auxNebula = newNebula;
+                                this.planetarySystemView = true;
+                                this.principalPane.getChildren().addAll(hidePlanetarySystems());//muestra todos los sistemas planetarios de esa nebulosa
+                                changeHeader("Nebula - > " + name);
+                                this.principalPane.getChildren().removeAll(hideNebulas());
+                                //poner visibles los otros botones
+                                this.btnNewNebula.setDisable(true);
+                                this.btnNewNebula.setOpacity(0.5);
+                                this.btnNewPlanetarySystem.setVisible(true);
+                                this.lblNewPlanetarySystem.setVisible(true);
+                            }
+                });
+                if (this.enableCreation)
+                {//Si se puede crear cualquier elemento, verifica que no se cree uno sobre el otro
+                    this.principalPane.getChildren().add(grid);
+                    this.nebulas.add(newNebula);
+                    this.createNebula = false;
+                }
+                else
+                    this.enableCreation = true;
+                res = newNebula;
+                break;
+            case "SYSTEM":
+                PlanetarySystem newPlanetarySystem = new PlanetarySystem(name);
+                newPlanetarySystem.setView(grid);
+                grid.setOnMouseClicked((MouseEvent evento)
+                        -> 
+                        {
+                            if (this.createPlanetarySystem)//Alerta que esta intentando crear un sistema planetario sobre otra existente
+                            {
+                                notification("/Images/close.png", "Alert", "Try again in another place");
+                                this.enableCreation = false;
+                            }
+                            else//Accede a la creacion de sistemas planterios de la nebula seleccionada
+                            {
+                                this.auxPlanetarySystem = newPlanetarySystem;
+                                this.principalPane.getChildren().addAll(hidePlanets());//Agrega todos los planetas de este sistema planetario
+                                changeHeader("Nebula - > " + this.auxNebula.getName() + " -- Planetary system -> " + name);
+                                this.principalPane.getChildren().removeAll(hidePlanetarySystems());
+                                //poner visibles los otros botones
+                                this.btnNewPlanetarySystem.setDisable(true);
+                                this.btnNewPlanetarySystem.setOpacity(0.5);
+                                this.btnNewPlanet.setVisible(true);
+                                this.lblNewPlanet.setVisible(true);
+
+                                this.planetarySystemView = false;//vista de los sistemas planetarios
+                                this.planetsView = true;//vista de los planetas
+                            }
+                });
+                if (this.enableCreation)
+                {//Si se puede crear cualquier elemento, verifica que no se cree uno sobre el otro
+                    this.principalPane.getChildren().add(grid);
+                    this.auxNebula.add(newPlanetarySystem);
+                    this.createPlanetarySystem = false;
+                }
+                else
+                    this.enableCreation = true;
+                res = newPlanetarySystem;
+                break;
+            case "PLANET":
+                Planet newPlanet = new Planet(name);
+                newPlanet.setView(grid);
+                grid.setOnMouseClicked((MouseEvent evento)
+                        -> 
+                        {
+                            if (this.createPlanet)//Alerta que esta intentando crear un planeta encima de otro
+                            {
+                                notification("/Images/close.png", "Alert", "Try again in another place");
+                                this.enableCreation = false;
+                            }
+                            else//Accede a la creacion de sistemas planterios de la nebula seleccionada
+
+                                JOptionPane.showMessageDialog(null, "Planeta: " + name + "\niridio: " + newPlanet.getIridium() + "\npaladio: " + newPlanet.getPaladium() + "\nplatino: " + newPlanet.getPlatinium() + "\nElemento zero: " + newPlanet.getElementZero()); //                            GridPane encabezado = new GridPane();
+
+                });
+                if (this.enableCreation)
+                {//Si se puede crear cualquier elemento, verifica que no se cree uno sobre el otro
+                    this.principalPane.getChildren().add(grid);
+                    this.auxPlanetarySystem.add(newPlanet);
+                    this.createPlanet = false;
+                }
+                else
+                    this.enableCreation = true;
+                res = newPlanet;
+                break;
+            default:
+                System.out.println("No es de ningun tipo");
+                break;
+        }
+
+        return res;
+    }
+
     @FXML
     private void CreateUniverse(MouseEvent event)
     {
         if (this.createNebula)// && !nebulaName.isEmpty() Se implementara en la scena que pida los valores
         {
             String nebulaName = JOptionPane.showInputDialog("Digite el nombre de la Nebulosa").toUpperCase().trim();//NOMBRE_NEBULA
-            ImageView imageView = new ImageView("Images/nebula.png");
-            imageView.setFitHeight(100);
-            imageView.setFitWidth(100);
-            imageView.setId(nebulaName);
-
-            Label label = new Label(nebulaName);
-            label.setFont(Font.font("Cambria", 30));
-            label.setTextFill(Color.WHITE);
-
-            GridPane grid = new GridPane();
-            grid.setPadding(new Insets(10, 10, 10, 10));//t, r, b, l
-            grid.setVgap(8);
-            grid.setHgap(5);
-            grid.setAlignment(Pos.CENTER);
-            grid.add(label, 0, 0);//hijo, columna, fila
-            grid.add(imageView, 0, 1);
-            grid.setGridLinesVisible(true);//Muestra las lineas del GridPane
-            grid.setLayoutX(event.getScreenX());
-            grid.setLayoutY(event.getScreenY());
-            Nebula newNebula = new Nebula(nebulaName);
-            newNebula.setView(grid);
-            grid.setOnMouseClicked((MouseEvent evento)
-                    -> 
-                    {
-                        if (this.createNebula)//Alerta que esta intentando crear una nebula sobre otra existente
-                        {
-                            Image close = new Image("/Images/close.png");
-                            Notifications dateNotification = Notifications.create()
-                                    .title("Alert")
-                                    .text("Try again in another place")
-                                    .hideAfter(Duration.seconds(2))
-                                    .graphic(new ImageView(close))
-                                    .position(Pos.TOP_CENTER);
-                            dateNotification.darkStyle();
-                            dateNotification.show();
-                            this.sePuedeCrear = false;
-                        }
-                        else//Accede a la creacion de sistemas planterios de la nebula seleccionada
-                        {
-                            this.auxNebula = newNebula;
-                            this.planetarySystemView = true;
-                            this.principalPane.getChildren().addAll(hidePlanetarySystems());//muestra todos los sistemas planetarios de esa nebulosa
-                            GridPane encabezado = new GridPane();
-                            encabezado.setPadding(new Insets(0, 0, 0, 30));//t, r, b, l
-                            encabezado.getColumnConstraints().add(new ColumnConstraints(1300));
-                            encabezado.setVgap(8);
-                            encabezado.setHgap(5);
-
-                            Label nebulaTitle = new Label("Nebula - > " + nebulaName);
-                            nebulaTitle.setFont(Font.font("Cambria", 30));
-                            nebulaTitle.setTextFill(Color.web("#0076a3"));
-                            nebulaTitle.setLayoutX(20);
-                            nebulaTitle.setLayoutY(20);
-                            nebulaTitle.setWrapText(true);
-                            nebulaTitle.setVisible(true);
-
-                            encabezado.setGridLinesVisible(true);//Muestra las lineas del GridPane
-                            this.btnSuccesful.setVisible(true);
-
-                            encabezado.add(nebulaTitle, 0, 0);//hijo, columna, fila
-
-                            encabezado.add(this.btnSuccesful, 1, 0);
-//                            this.nebulaHeader = encabezado;
-                            this.principalPane.setTop(encabezado);
-
-                            this.principalPane.getChildren().removeAll(hideNebulas());
-                            //poner visibles los otros botones
-                            this.btnNewNebula.setDisable(true);
-                            this.btnNewNebula.setOpacity(0.5);
-                            this.btnNewPlanetarySystem.setVisible(true);
-                            this.lblNewPlanetarySystem.setVisible(true);
-                        }
-            });
-            if (this.sePuedeCrear)
-            {//Si se puede crear cualquier elemento, verifica que no se cree uno sobre el otro
-                this.principalPane.getChildren().add(grid);
-                this.nebulas.add(newNebula);
-                this.createNebula = false;
-            }
-            else
-                this.sePuedeCrear = true;
+            Nebula newNebula = (Nebula) createObject(nebulaName, "Images/nebula.png", event, "NEBULA");
         }
 
         if (this.createPlanetarySystem)
         {
             String planetarySystemName = JOptionPane.showInputDialog("Digite el nombre del Sistema Planetario").toUpperCase().trim();
-            ImageView imageView = new ImageView("Images/nebulaIcon2.png");
-            imageView.setFitHeight(100);
-            imageView.setFitWidth(100);
-            imageView.setId(planetarySystemName);
-
-            Label label = new Label(planetarySystemName);
-            label.setFont(Font.font("Cambria", 30));
-            label.setTextFill(Color.WHITE);
-
-            GridPane grid = new GridPane();
-            grid.setPadding(new Insets(10, 10, 10, 10));//t, r, b, l
-            grid.setVgap(8);
-            grid.setHgap(5);
-            grid.setAlignment(Pos.CENTER);
-            grid.add(label, 0, 0);//hijo, columna, fila
-            grid.add(imageView, 0, 1);
-            grid.setGridLinesVisible(true);//Muestra las lineas del GridPane
-            grid.setLayoutX(event.getScreenX());
-            grid.setLayoutY(event.getScreenY());
-            PlanetarySystem newPlanetarySystem = new PlanetarySystem(planetarySystemName);
-            newPlanetarySystem.setView(grid);
-            grid.setOnMouseClicked((MouseEvent evento)
-                    -> 
-                    {
-                        if (this.createPlanetarySystem)//Alerta que esta intentando crear un sistema planetario sobre otra existente
-                        {
-                            Image close = new Image("/Images/close.png");
-                            Notifications dateNotification = Notifications.create()
-                                    .title("Alert")
-                                    .text("Try again in another place")
-                                    .hideAfter(Duration.seconds(2))
-                                    .graphic(new ImageView(close))
-                                    .position(Pos.TOP_CENTER);
-                            dateNotification.darkStyle();
-                            dateNotification.show();
-                            this.sePuedeCrear = false;
-                        }
-                        else//Accede a la creacion de sistemas planterios de la nebula seleccionada
-                        {
-                            this.auxPlanetarySystem = newPlanetarySystem;
-                            this.principalPane.getChildren().addAll(hidePlanets());//Agrega todos los planetas de este sistema planetario
-                            GridPane encabezado = new GridPane();
-                            encabezado.setPadding(new Insets(0, 0, 0, 30));//t, r, b, l
-                            encabezado.getColumnConstraints().add(new ColumnConstraints(1300));
-                            encabezado.setVgap(8);
-                            encabezado.setHgap(5);
-                            Label PlanetaryTitle = new Label("Nebula - > " + this.auxNebula.getName() + " -- Planetary system -> " + planetarySystemName);
-                            PlanetaryTitle.setFont(Font.font("Cambria", 30));
-                            PlanetaryTitle.setTextFill(Color.web("#0076a3"));
-                            PlanetaryTitle.setLayoutX(20);
-                            PlanetaryTitle.setLayoutY(20);
-                            PlanetaryTitle.setWrapText(true);
-                            PlanetaryTitle.setVisible(true);
-                            encabezado.setGridLinesVisible(true);//Muestra las lineas del GridPane
-                            encabezado.add(PlanetaryTitle, 0, 0);//hijo, columna, fila
-                            this.btnSuccesful.setVisible(true);
-
-                            encabezado.add(this.btnSuccesful, 1, 0);
-//                            this.planetarySystemHeader = encabezado;
-                            this.principalPane.setTop(encabezado);
-                            this.principalPane.getChildren().removeAll(hidePlanetarySystems());
-                            //poner visibles los otros botones
-                            this.btnNewPlanetarySystem.setDisable(true);
-                            this.btnNewPlanetarySystem.setOpacity(0.5);
-                            this.btnNewPlanet.setVisible(true);
-                            this.lblNewPlanet.setVisible(true);
-
-                            this.planetarySystemView = false;//vista de los sistemas planetarios
-                            this.planetsView = true;//vista de los planetas
-                        }
-            });
-            if (this.sePuedeCrear)
-            {//Si se puede crear cualquier elemento, verifica que no se cree uno sobre el otro
-                this.principalPane.getChildren().add(grid);
-                this.auxNebula.add(newPlanetarySystem);
-                this.createPlanetarySystem = false;
-            }
-            else
-                this.sePuedeCrear = true;
+            PlanetarySystem newPlanetarySystem = (PlanetarySystem) createObject(planetarySystemName, "Images/nebulaIcon2.png", event, "SYSTEM");
         }
 
         if (this.createPlanet)
         {
             String planetName = JOptionPane.showInputDialog("Digite el nombre del Planeta").toUpperCase().trim();
-            ImageView imageView = new ImageView("Images/sonda.png");
-            imageView.setFitHeight(100);
-            imageView.setFitWidth(100);
-            imageView.setId(planetName);
-
-            Label label = new Label(planetName);
-            label.setFont(Font.font("Cambria", 30));
-            label.setTextFill(Color.WHITE);
-
-            GridPane grid = new GridPane();
-            grid.setPadding(new Insets(10, 10, 10, 10));//t, r, b, l
-            grid.setVgap(8);
-            grid.setHgap(5);
-            grid.setAlignment(Pos.CENTER);
-            grid.add(label, 0, 0);//hijo, columna, fila
-            grid.add(imageView, 0, 1);
-            grid.setGridLinesVisible(true);//Muestra las lineas del GridPane
-            grid.setLayoutX(event.getScreenX());
-            grid.setLayoutY(event.getScreenY());
-            Planet newPlanet = new Planet(planetName);
-            newPlanet.setView(grid);
-            grid.setOnMouseClicked((MouseEvent evento)
-                    -> 
-                    {
-                        if (this.createPlanet)//Alerta que esta intentando crear un planeta encima de otro
-                        {
-                            Image close = new Image("/Images/close.png");
-                            Notifications dateNotification = Notifications.create()
-                                    .title("Alert")
-                                    .text("Try again in another place")
-                                    .hideAfter(Duration.seconds(2))
-                                    .graphic(new ImageView(close))
-                                    .position(Pos.TOP_CENTER);
-                            dateNotification.darkStyle();
-                            dateNotification.show();
-                            this.sePuedeCrear = false;
-                        }
-                        else//Accede a la creacion de sistemas planterios de la nebula seleccionada
-
-                            JOptionPane.showMessageDialog(null, "Planeta: " + planetName + "\niridio: " + newPlanet.getIridium() + "\npaladio: " + newPlanet.getPaladium() + "\nplatino: " + newPlanet.getPlatinium() + "\nElemento zero: " + newPlanet.getElementZero()); //                            GridPane encabezado = new GridPane();
-
-            });
-            if (this.sePuedeCrear)
-            {//Si se puede crear cualquier elemento, verifica que no se cree uno sobre el otro
-                this.principalPane.getChildren().add(grid);
-                this.auxPlanetarySystem.add(newPlanet);
-                this.createPlanet = false;
-            }
-            else
-                this.sePuedeCrear = true;
+            Planet newPlanet = (Planet) createObject(planetName, "Images/sonda.png", event, "PLANET");
         }
     }
 
@@ -521,31 +470,14 @@ public class GalaxyController implements Initializable
         }
         if (this.planetsView)
         {//si estaba en esta vista
-            GridPane encabezado = new GridPane();
-            encabezado.setPadding(new Insets(0, 0, 0, 30));//t, r, b, l
-            encabezado.getColumnConstraints().add(new ColumnConstraints(1300));
-            encabezado.setVgap(8);
-            encabezado.setHgap(5);
-            encabezado.setGridLinesVisible(true);//Muestra las lineas del GridPane
-            Label nebulaTitle = new Label("Nebula - > " + this.auxNebula.getName());
-            nebulaTitle.setFont(Font.font("Cambria", 30));
-            nebulaTitle.setTextFill(Color.web("#0076a3"));
-            nebulaTitle.setLayoutX(20);
-            nebulaTitle.setLayoutY(20);
-            nebulaTitle.setWrapText(true);
-            nebulaTitle.setVisible(true);
-            encabezado.add(nebulaTitle, 0, 0);//hijo, columna, fila
-            this.btnSuccesful.setVisible(true);
-
-            encabezado.add(this.btnSuccesful, 1, 0);
-
+            changeHeader("Nebula - > " + this.auxNebula.getName());
             this.principalPane.getChildren().removeAll(hidePlanets());//oculta todos los planetas
             this.principalPane.getChildren().addAll(hidePlanetarySystems());
+            
             this.btnNewPlanetarySystem.setDisable(false);
             this.btnNewPlanetarySystem.setOpacity(1);
             this.btnNewPlanet.setVisible(false);
             this.lblNewPlanet.setVisible(false);
-            this.principalPane.setTop(encabezado);
             this.planetsView = false;
             this.planetarySystemView = true;
         }
@@ -668,9 +600,22 @@ public class GalaxyController implements Initializable
             URL auxURL = checkFile(file.getAbsolutePath());
             JOptionPane.showMessageDialog(null, auxURL);
             JOptionPane.showMessageDialog(null, auxURL.getFile().substring(1));
-            JSONReader loader = new JSONReader(auxURL.getFile().substring(1));
-            this.nebulas = loader.readJSON();
+            LoaderJSON loaderJSON = new LoaderJSON();
+            this.nebulas = loaderJSON.readJSON(file.getAbsolutePath());
         }
-
     }
+
+    private void notification(String img, String title, String description)
+    {
+        Image close = new Image(img);
+        Notifications dateNotification = Notifications.create()
+                .title(title)
+                .text(description)
+                .hideAfter(Duration.seconds(4))
+                .graphic(new ImageView(close))
+                .position(Pos.TOP_CENTER);
+        dateNotification.darkStyle();
+        dateNotification.show();
+    }
+
 }
