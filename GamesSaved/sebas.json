@@ -1,0 +1,76 @@
+{
+    "NEBULAS": [
+        {
+            "SEBAS": {
+                "POSITION": [
+                    563,
+                    402
+                ],
+                "VICTOR": {
+                    "POSITION": [
+                        418,
+                        236
+                    ],
+                    "MATEO": {
+                        "POSITION": [
+                            418,
+                            236
+                        ],
+                        "ZERO": 24800,
+                        "PLATINO": 17739,
+                        "IRIDIO": 225,
+                        "PALADIO": 26621
+                    },
+                    "LAURA": {
+                        "POSITION": [
+                            418,
+                            236
+                        ],
+                        "ZERO": 13760,
+                        "PLATINO": 23462,
+                        "IRIDIO": 15766,
+                        "PALADIO": 20497
+                    }
+                },
+                "JIMMY": {
+                    "POSITION": [
+                        835,
+                        287
+                    ],
+                    "MARIA": {
+                        "POSITION": [
+                            835,
+                            287
+                        ],
+                        "ZERO": 4427,
+                        "PLATINO": 19398,
+                        "IRIDIO": 8100,
+                        "PALADIO": 7269
+                    }
+                }
+            },
+            "MAURO": {
+                "POSITION": [
+                    858,
+                    212
+                ],
+                "ALEJO": {
+                    "POSITION": [
+                        494,
+                        457
+                    ],
+                    "MONICA": {
+                        "POSITION": [
+                            494,
+                            457
+                        ],
+                        "ZERO": 22091,
+                        "PLATINO": 17379,
+                        "IRIDIO": 20650,
+                        "PALADIO": 6824
+                    }
+                }
+            }
+        }
+    ]
+}
