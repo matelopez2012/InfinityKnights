@@ -1,0 +1,66 @@
+{
+    "NEBULAS": [
+        {
+            "SANTIAGO": {
+                "POSITION": [
+                    412,
+                    228
+                ],
+                "MATEO": {
+                    "POSITION": [
+                        435,
+                        298
+                    ],
+                    "ZORRA": {
+                        "POSITION": [
+                            435,
+                            298
+                        ],
+                        "ZERO": 6533,
+                        "PLATINO": 9121,
+                        "IRIDIO": 15885,
+                        "PALADIO": 28968
+                    }
+                },
+                "RIOS": {
+                    "POSITION": [
+                        787,
+                        263
+                    ],
+                    "PERRO": {
+                        "POSITION": [
+                            787,
+                            263
+                        ],
+                        "ZERO": 28519,
+                        "PLATINO": 3323,
+                        "IRIDIO": 14778,
+                        "PALADIO": 25402
+                    }
+                }
+            },
+            "AGUDELO": {
+                "POSITION": [
+                    808,
+                    296
+                ],
+                "PERRA": {
+                    "POSITION": [
+                        476,
+                        285
+                    ],
+                    "PACHON": {
+                        "POSITION": [
+                            476,
+                            285
+                        ],
+                        "ZERO": 15267,
+                        "PLATINO": 9249,
+                        "IRIDIO": 24228,
+                        "PALADIO": 9028
+                    }
+                }
+            }
+        }
+    ]
+}
